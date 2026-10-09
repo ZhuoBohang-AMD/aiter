@@ -77,9 +77,9 @@ def _rmsnorm_forward(x: torch.Tensor, weight: torch.Tensor, epsilon: float):
 
     blk_size = block_size(x)
     USE_BLOCKED = use_blocked(x)
-    NUM_PRGMS = num_programs_fwd(x)
+    num_prgms = num_programs_fwd(x)
 
-    grid = lambda meta: (NUM_PRGMS,)
+    grid = lambda meta: (num_prgms,)
     _rms_norm_kernel[grid](
         x,
         y,
@@ -92,7 +92,6 @@ def _rmsnorm_forward(x: torch.Tensor, weight: torch.Tensor, epsilon: float):
         epsilon,
         blk_size,
         USE_BLOCKED,
-        NUM_PRGMS,
     )
 
     return y, rsigma
@@ -112,9 +111,9 @@ def _rmsnorm_forward_with_add(
 
     blk_size = block_size(x)
     USE_BLOCKED = use_blocked(x)
-    NUM_PRGMS = num_programs_fwd(x)
+    num_prgms = num_programs_fwd(x)
 
-    grid = lambda meta: (NUM_PRGMS,)
+    grid = lambda meta: (num_prgms,)
     _fused_add_rmsnorm_kernel[grid](
         x,
         out,
@@ -129,7 +128,6 @@ def _rmsnorm_forward_with_add(
         epsilon,
         blk_size,
         USE_BLOCKED,
-        NUM_PRGMS,
     )
 
 
@@ -405,7 +403,7 @@ def rmsnorm2d_fwd_with_smoothquant(
 
     blk_size = block_size(input)
     USE_BLOCKED = use_blocked(input)
-    NUM_PRGMS = num_programs_fwd(input)
+    num_prgms = num_programs_fwd(input)
 
     IS_SMOOTH = True
     DTYPE_MAX = get_dtype_max(out.dtype)
@@ -421,7 +419,7 @@ def rmsnorm2d_fwd_with_smoothquant(
     if USE_BLOCKED:
         aux = torch.empty(n_rows, n_cols, dtype=torch.float32, device=input.device)
 
-    grid = lambda meta: (NUM_PRGMS,)
+    grid = lambda meta: (num_prgms,)
     _quant_rms_norm_kernel[grid](
         input,
         out,
@@ -444,7 +442,6 @@ def rmsnorm2d_fwd_with_smoothquant(
         dump_rms_norm,
         blk_size,
         USE_BLOCKED,
-        NUM_PRGMS,
     )
 
 
@@ -475,7 +472,7 @@ def rmsnorm2d_fwd_with_dynamicquant(
 
     blk_size = block_size(input)
     USE_BLOCKED = use_blocked(input)
-    NUM_PRGMS = num_programs_fwd(input)
+    num_prgms = num_programs_fwd(input)
 
     xscale = None
     IS_SMOOTH = False
@@ -491,7 +488,7 @@ def rmsnorm2d_fwd_with_dynamicquant(
     if USE_BLOCKED:
         aux = torch.empty(n_rows, n_cols, dtype=torch.float32, device=input.device)
 
-    grid = lambda meta: (NUM_PRGMS,)
+    grid = lambda meta: (num_prgms,)
     _quant_rms_norm_kernel[grid](
         input,
         out,
@@ -514,7 +511,6 @@ def rmsnorm2d_fwd_with_dynamicquant(
         dump_rms_norm,
         blk_size,
         USE_BLOCKED,
-        NUM_PRGMS,
     )
 
     return out_rms_norm
@@ -552,7 +548,7 @@ def rmsnorm2d_fwd_with_add_smoothquant(
 
     blk_size = block_size(input)
     USE_BLOCKED = use_blocked(input)
-    NUM_PRGMS = num_programs_fwd(input)
+    num_prgms = num_programs_fwd(input)
 
     IS_SMOOTH = True
     DTYPE_MAX = get_dtype_max(out.dtype)
@@ -562,7 +558,7 @@ def rmsnorm2d_fwd_with_add_smoothquant(
     if USE_BLOCKED:
         aux = torch.empty(n_rows, n_cols, dtype=torch.float32, device=input.device)
 
-    grid = lambda meta: (NUM_PRGMS,)
+    grid = lambda meta: (num_prgms,)
     _quant_fused_add_rmsnorm_kernel[grid](
         input,
         out,
@@ -582,7 +578,6 @@ def rmsnorm2d_fwd_with_add_smoothquant(
         IS_SMOOTH,
         blk_size,
         USE_BLOCKED,
-        NUM_PRGMS,
     )
 
 
@@ -615,7 +610,7 @@ def rmsnorm2d_fwd_with_add_dynamicquant(
 
     blk_size = block_size(input)
     USE_BLOCKED = use_blocked(input)
-    NUM_PRGMS = num_programs_fwd(input)
+    num_prgms = num_programs_fwd(input)
 
     xscale = None
     IS_SMOOTH = False
@@ -626,7 +621,7 @@ def rmsnorm2d_fwd_with_add_dynamicquant(
     if USE_BLOCKED:
         aux = torch.empty(n_rows, n_cols, dtype=torch.float32, device=input.device)
 
-    grid = lambda meta: (NUM_PRGMS,)
+    grid = lambda meta: (num_prgms,)
     _quant_fused_add_rmsnorm_kernel[grid](
         input,
         out,
@@ -646,7 +641,6 @@ def rmsnorm2d_fwd_with_add_dynamicquant(
         IS_SMOOTH,
         blk_size,
         USE_BLOCKED,
-        NUM_PRGMS,
     )
 
 
